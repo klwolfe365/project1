@@ -22,7 +22,7 @@ sourcecode : pub.ist.ac.at/~vnk/software/blossom5-v2.05.src.tar.gz
 
 */
 
-void LoadInput(int& node_num, int& edge_num, int*& edges, int*& weights, int** adjacentMatrix, int N) {
+void LoadInput(int& node_num, int& edge_num, int*& edges, int*& weights, float** adjacentMatrix, int N) {
 	int e = 0;
 	node_num = N;
 	edge_num = N*(N-1)/2 ; //complete graph
@@ -57,7 +57,7 @@ void PrintMatching(int node_num, PerfectMatching* pm) {
 
 int main() {
 	set< pair<int,int> > generatedPointset;
-	int** adjacentMatrix;
+	float** adjacentMatrix;
 	int W, H, N;
 	Point pointset;
 
@@ -76,15 +76,43 @@ int main() {
 	//Deliverable A: From pointset and adjacentMatrix, you should construct MST with Prim or Kruskal
 	MST mst(adjacentMatrix, N);
 	mst.makeTree();
+	cout << "-------TREE 1--------" << endl;
 	mst.printMST();
   cout << "MST: "<<	mst.calMean(1) << endl;
   //cout << "TSP1p5: "<< mst.calMean(3) << endl;
+
+  /*****************************************/
+  	/*set< pair<int,int> > genpointset2;
+	float** adjacentMatrix2;
+	//int W, H, N;
+	Point pointset2;*/
+
+	//W = /*11588*/100;
+	//H = /*13772*/100;
+	//N = /*9824*/10;
+
+	//cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
+
+	/*pointset2.generatePoint(W, H, N); //max(W,H,N) should be < 20000 because of memory limitation
+	pointset2.printPointset();
+
+	genpointset2 = pointset2.getPointset();
+	adjacentMatrix2 = pointset2.getAdjacentMatrix();
+
+	//Deliverable A: From pointset and adjacentMatrix, you should construct MST with Prim or Kruskal
+	MST mst2(adjacentMatrix2, N);
+	mst2.makeTree();
+	cout << "-------TREE 2--------" << endl;
+	mst2.printMST();*/
+
+
+  /****************************************/
 	
   cout << "-----------TSP-----------" << endl;
 	//Deliverable B: Find TSP2 path from the constructed MST
 	//You won't need any wrappers for B.
 	mst.makeTSP2();
-  mst.printMST();
+  mst.printTSP2();
   //cout << "TSP2: "<< mst.calMean(2) << endl;
 	
 

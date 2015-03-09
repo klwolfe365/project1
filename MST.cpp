@@ -5,12 +5,13 @@
 #include <array>
 #include <stack>
 
-MST::MST(int** input, int size) {
+MST::MST(float** input, int size) {
 	adjacentMatrix = input;
 	key = new int[size];   
   mstSet = new bool[size];  
 	parent = new int[size];
   tsp = new int[size];
+  parent_tsp = new int[size];
 	N = size;
 }
 
@@ -81,13 +82,17 @@ void MST::printMST() {
 //calculate mean of all edges in the MST
 float MST::calMean(int option) {
 	float mean = 0.0;
+  float sum = 0.0;
+
+  //For calculating the mean of the MST edge cost
 	if(option == MST_1) {
 
-		//calculate ur mom
-		int sum = 0;
-		for(int i = 0; i < N; ++i) {
-			sum = sum + key[i]; 
-		}
+    //find the total edge cost sum
+    for(int index = 0; index < N; index++) {
+
+        sum += key[index];
+    }
+    //find mean of edge cost sum
 		mean = sum / N;	
   }
 
@@ -117,10 +122,11 @@ void MST::makeTSP2() {
   bool *visited = new bool[N];
   for(int index = 0; index < N; index++) {
     visited[index] = false;
-    cout << "CURRENT KEY: " << key[index] << endl;
+    cout << "KEY[" << index << "] - " << key[index] << endl;
   }
 
   list<int> *path = new list<int>;
+
 
   stack<int> s;
   s.push(0);
@@ -132,18 +138,36 @@ void MST::makeTSP2() {
     path->push_back(curr);
     visited[curr] = true;
     for(int v = 0; v < N; v++) {
-      if(adjacentMatrix[curr][v] == key[v] && !visited[v]) 
+      if(parent[v]==curr && !visited[v]) 
         s.push(v);
     }
   }
-  list<int>::iterator i; 
-  for(i = path->begin(); i!=path->end(); i++){
+
+  int pre = 0;
+  for(list<int>::iterator i = path->begin(); i!=path->end(); i++){
+    curr = *i;
+    parent_tsp[curr] = pre;
     cout << *i << " ";
+    pre = curr;
+  }
+  parent_tsp[0] = pre;
+
+  for(int i = 0; i < N; i++){
+    tsp[i] = adjacentMatrix[i][parent_tsp[i]];
     
   }
 	
   //call to local function calMean(2)
   //cout << "TSP2: "<< calMean(2) << endl;
+}
+
+void MST::printTSP2() {
+  cout<<endl;
+  cout<<"TSP2"<<endl;
+  cout<<"Edge   Weight"<<endl;
+  for (int i = 0; i < N; i++) {
+    cout << parent_tsp[i] <<" - "<< i <<"  "<< tsp[i] << endl;
+  }
 }
 
 void MST::makeTSP1_5() {
