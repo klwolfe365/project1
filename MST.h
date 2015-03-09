@@ -20,7 +20,7 @@ public:
 
 	//deliverable b
 	void makeTSP2();
-  void DFS(int index, bool visited[]);
+  //void DFS(int index, bool visited[]);
 
 	//deliverable c
 	void makeTSP1_5();

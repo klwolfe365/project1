@@ -113,86 +113,38 @@ float MST::calStd(int option) {
 
 void MST::makeTSP2() {
 
-  stack<int> s;
-	//make a Eulerian tour by DFS
+  //make a Eulerian tour by DFS
   bool *visited = new bool[N];
   for(int index = 0; index < N; index++) {
     visited[index] = false;
     cout << "CURRENT KEY: " << key[index] << endl;
   }
 
-  //mark the the first node as visited
-  visited[0] = true;
- 
+  list<int> *path = new list<int>;
+
+  stack<int> s;
   s.push(0);
-  int leaf = -1;
-  while(!s.empty()) {
-    //if (leaf != -1)
-    //add current leaf edge, then set leaf = -1
-    int curr = s.top();
-    cout << s.top() << endl;
+  int curr;
+ 
+  while(!s.empty()){
+    curr = s.top();
     s.pop();
+    path->push_back(curr);
     visited[curr] = true;
-    if(leaf != -1) {
-      parent[leaf] = curr;
-      tsp[leaf] = adjacentMatrix[curr][leaf];
-      leaf = -1;
-    }
-
-    int count = 0;
     for(int v = 0; v < N; v++) {
-      if(adjacentMatrix[curr][v] == key[v] && !visited[v]) {
+      if(adjacentMatrix[curr][v] == key[v] && !visited[v]) 
         s.push(v);
-        count++;
-      }
     }
-
-    if(count == 0) 
-      leaf = curr;
   }
-
-
-  for(int i = 0; i < N; i++){
-    cout << "Vertice " << i << " Weight " << tsp[i];
+  list<int>::iterator i; 
+  for(i = path->begin(); i!=path->end(); i++){
+    cout << *i << " ";
+    
   }
-
-  //starting from the very beginning...fasten your seatbelts
-  //for(int index = 0; index < N; index++) {
-   // if(visited[index] == false)
-
- // }
-
-
-  /*Mark all vertices as not visited
-  bool *visited = new bool[V];
-  for(int index = 0; i < V; ++i)
-    visited[index] = false;
-*/
-  
-
-	//add shortcuts if a vertex has no detours.
-  //cout << "MAKE TSP UR MOM" << endl;
-	//calculate heuristic TSP cost
 	
   //call to local function calMean(2)
   //cout << "TSP2: "<< calMean(2) << endl;
 }
-
-/*
- * COOL FUNCTION DAFUQ
- *
- *
-void MST::DFS(int index, bool visited[]) {
-  
-  //Mark the current node as visited
-  visited[index] = true;
-
-  //Search for all vertices adjacent to this current node
-  //how do we use the adjacency matrix to do this exactly?
-  //
-    
-}*/
-
 
 void MST::makeTSP1_5() {
 	
