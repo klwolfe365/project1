@@ -62,19 +62,19 @@ void Point::generatePoint(unsigned int H, unsigned int W, unsigned int N) {
 }
 
 void Point::printPointset() {
-	 cout<<"Generated pointset list: "<<endl;
+	 cout << "Generated pointset list: " << endl;
 	 for(set< pair<int,int> >::iterator it = pointset.begin() ; it != pointset.end() ; ++it) {
-		 cout<<(*it).first<<" , "<<(*it).second<<endl;
+		 cout << (*it).first<<" , " << (*it).second<<endl;
 	 }
-	 cout<<endl;
+	 cout << endl;
 
-	 cout<<"adjacency matrix: "<<endl;
+	 /*cout<<"adjacency matrix: "<<endl;
 	 for(int i=0; i<pointNum ; ++i) {
 		 for(int j=0; j<pointNum ; ++j) {
 			 cout<<adjacentMatrix[i][j]<<"  ";
 		 }
 		 cout<<endl;
-	 }
+	 }*/
 }
 
 float Point::getEuclideanDistance(int x1, int y1, int x2, int y2) {

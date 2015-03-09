@@ -56,69 +56,146 @@ void PrintMatching(int node_num, PerfectMatching* pm) {
 }
 
 int main() {
-	set< pair<int,int> > generatedPointset;
-	float** adjacentMatrix;
-	int W, H, N;
-	Point pointset;
 
-	W = /*11588*/100;
-	H = /*13772*/100;
-	N = /*9824*/10;
+	int W, H, N;
+
+	set< pair<int,int> > generatedPointset1;
+	set< pair<int,int> > generatedPointset2;
+	set< pair<int,int> > generatedPointset3;
+	set< pair<int,int> > generatedPointset4;
+
+	float** adjacentMatrix1;
+	float** adjacentMatrix2;
+	float** adjacentMatrix3;
+	float** adjacentMatrix4;
+	
+	Point pointset1;
+	Point pointset2;
+	Point pointset3;
+	Point pointset4;
+
+	//max(W,H,N) should be < 20000 because of memory limitation
+	W = /*11588*/5000;
+	H = /*13772*/3000;
+	N = /*9824*/7000;
 
 	cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
 
-	pointset.generatePoint(W, H, N); //max(W,H,N) should be < 20000 because of memory limitation
-	pointset.printPointset();
 
-	generatedPointset = pointset.getPointset();
-	adjacentMatrix = pointset.getAdjacentMatrix();
+	//pointset and adjacency matrix for graph 1
+	pointset1.generatePoint(W, H, N); 
+	//pointset1.printPointset();
+	generatedPointset1 = pointset1.getPointset();
+	adjacentMatrix1 = pointset1.getAdjacentMatrix();
 
-	//Deliverable A: From pointset and adjacentMatrix, you should construct MST with Prim or Kruskal
-	MST mst(adjacentMatrix, N);
-	mst.makeTree();
-	cout << "-------TREE 1--------" << endl;
-	mst.printMST();
-  cout << "MST: "<<	mst.calMean(1) << endl;
-  //cout << "TSP1p5: "<< mst.calMean(3) << endl;
-
-  /*****************************************/
-  	/*set< pair<int,int> > genpointset2;
-	float** adjacentMatrix2;
-	//int W, H, N;
-	Point pointset2;*/
-
-	//W = /*11588*/100;
-	//H = /*13772*/100;
-	//N = /*9824*/10;
-
-	//cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
-
-	/*pointset2.generatePoint(W, H, N); //max(W,H,N) should be < 20000 because of memory limitation
-	pointset2.printPointset();
-
-	genpointset2 = pointset2.getPointset();
+	//pointset and adjacency matrix for graph 2
+	pointset2.generatePoint(W, H, N); 
+	//pointset2.printPointset();
+	generatedPointset2 = pointset2.getPointset();
 	adjacentMatrix2 = pointset2.getAdjacentMatrix();
 
-	//Deliverable A: From pointset and adjacentMatrix, you should construct MST with Prim or Kruskal
+	//pointset and adjacency matrix for graph 3
+	pointset3.generatePoint(W, H, N); 
+	//pointset3.printPointset();
+	generatedPointset3 = pointset3.getPointset();
+	adjacentMatrix3 = pointset3.getAdjacentMatrix();
+
+	//pointset and adjacency matrix for graph 4
+	pointset4.generatePoint(W, H, N); 
+	//pointset4.printPointset();
+	generatedPointset4 = pointset4.getPointset();
+	adjacentMatrix4 = pointset4.getAdjacentMatrix();
+
+
+	//Deliverable A: From pointset and adjacentMatrix -> MST
+	MST mst1(adjacentMatrix1, N);
 	MST mst2(adjacentMatrix2, N);
+	MST mst3(adjacentMatrix3, N);
+	MST mst4(adjacentMatrix4, N);
+
+	mst1.makeTree();
 	mst2.makeTree();
-	cout << "-------TREE 2--------" << endl;
-	mst2.printMST();*/
+	mst3.makeTree();
+	mst4.makeTree();
+
+	//mst1.printMST();
+
+	//MST Mean Cost Calculation
+ 	float totalMeanSum = mst1.calMean(1) +
+ 						 mst2.calMean(1) +
+ 						 mst3.calMean(1) +
+ 						 mst4.calMean(1);
+
+ 	//hardcoded for 4 trials
+ 	float totalMean = totalMeanSum / 4;
+
+ 	//MST STD Calculation
+ 	float totalMSTSquaredSum = (mst1.calStd(1) +
+ 							   mst2.calStd(1) +
+ 							   mst3.calStd(1) +
+ 							   mst4.calStd(1)) / 4;
+
+    float totalMSTStd =  sqrt(totalMSTSquaredSum - (totalMean * totalMean));
 
 
-  /****************************************/
 	
-  cout << "-----------TSP-----------" << endl;
 	//Deliverable B: Find TSP2 path from the constructed MST
 	//You won't need any wrappers for B.
-	mst.makeTSP2();
-  mst.printTSP2();
-  //cout << "TSP2: "<< mst.calMean(2) << endl;
-	
+	mst1.makeTSP2();
+	mst2.makeTSP2();
+	mst3.makeTSP2();
+	mst4.makeTSP2();
+
+    //mst1.printTSP2();
+    
+	//TSP Mean Cost
+    float totalTSPMeanSum = mst1.calMean(2) +
+ 						 	mst2.calMean(2) +
+ 						 	mst3.calMean(2) +
+ 						 	mst4.calMean(2);
+ 	//hardcoded for 4 trials
+ 	float totalTSPMean = totalTSPMeanSum / 4;
+
+ 	//TSP STD 
+ 	float squaredSum1 = mst1.calStd(2); 
+ 	float squaredSum2 = mst2.calStd(2);
+ 	float squaredSum3 = mst3.calStd(2);
+ 	float squaredSum4 = mst4.calStd(2);
+
+ 	float totalTSPSquaredSum = (squaredSum1 + squaredSum2 + 
+ 							squaredSum3 + squaredSum4) / 4;
+
+ 	float totalTSP2STD =  sqrt(totalTSPSquaredSum - (totalTSPMean * totalTSPMean));
+
 
 	//Deliverable C: Find TSP1.5 path from the constructed MST
-  //mst.makeTSP1p5
-	//cout << "TSP1p5: "<< mst.calMean(3) << endl;
+
+    //mst1.makeTSP1p5
+    //mst2.makeTSP1p5
+    //mst3.makeTSP1p5
+    //mst4.makeTSP1p5
+	
+
+
+ 	//Print out the final result here. 
+ 	//Mean and STD of Deliverable A, B, and C. 
+
+ 	//Print out the Mean!
+ 	cout << "[Mean]" << endl;
+ 	cout << "MST: " << totalMean << endl;
+ 	cout << "TSP2: " << totalTSPMean << endl;
+ 	cout << "TSP1p5: ur mom" << endl; 
+ 	cout << endl;
+
+ 	//Print out the STDs!
+ 	cout << "[STD]" << endl; 
+ 	cout << "MST: " << totalMSTStd << endl;
+ 	cout << "TSP2: " << totalTSP2STD << endl;
+ 	cout << "TSP1p5: ur mom" << endl;
+ 	cout << endl;
+ 	
+
+
 
 	//Find the perfect minimum-weight matching 
 	struct PerfectMatching::Options options;
@@ -127,7 +204,7 @@ int main() {
 	int* weights;
 	PerfectMatching *pm = new PerfectMatching(node_num, edge_num);
 
-	LoadInput(node_num, edge_num, edges, weights, adjacentMatrix, N);
+	LoadInput(node_num, edge_num, edges, weights, adjacentMatrix1, N);
 
 	for (e=0; e<edge_num; e++) {
 		pm->AddEdge(edges[2*e], edges[2*e+1], weights[e]);
@@ -137,9 +214,9 @@ int main() {
 	pm->Solve();
 
 	double cost = ComputePerfectMatchingCost(node_num, edge_num, edges, weights, pm);
-	printf("Total cost of the perfect min-weight matching = %.1f\n", cost);
+	//printf("Total cost of the perfect min-weight matching = %.1f\n", cost);
 	
-	PrintMatching(node_num, pm);
+	//PrintMatching(node_num, pm);
 
 	delete pm;
 	delete [] edges;

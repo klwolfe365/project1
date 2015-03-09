@@ -86,17 +86,21 @@ float MST::calMean(int option) {
 
   //For calculating the mean of the MST edge cost
 	if(option == MST_1) {
-
     //find the total edge cost sum
     for(int index = 0; index < N; index++) {
-
         sum += key[index];
     }
-    //find mean of edge cost sum
-		mean = sum / N;	
+		mean = sum ;	
   }
 
-  else if(option == TSP2) {}
+  //For calculating the mean of the TSP2 edge cost
+  else if(option == TSP2) {
+    //find the total edge cost sum
+    for(int index = 0; index < N; index++) {
+        sum += tsp[index];
+    }
+    mean = sum;
+  }
 
   else if(option == TSP1_5) {}
 
@@ -106,12 +110,21 @@ float MST::calMean(int option) {
 //calculate standard deviation of all edges in the MST
 float MST::calStd(int option) {
 	float std = 0.0;
+  float sum = 0.0;
 
 	if(option == MST_1) {
-		//calculate
+		for(int index = 0; index < N; index++) {
+        sum += key[index];
+    }
+    std = sum * sum;
   }
 
-  else if(option == TSP2) {}
+  else if(option == TSP2) {
+    for(int index = 0; index < N; index++) {
+        sum += tsp[index];
+    }
+    std = sum * sum;
+  }
   else if(option == TSP1_5) {}
 	return std;
 }
@@ -120,10 +133,14 @@ void MST::makeTSP2() {
 
   //make a Eulerian tour by DFS
   bool *visited = new bool[N];
+  //cout << endl;
+  //cout << "Before" << endl;
+  //cout << "Vertex - " << "Incoming edge weight" << endl;
   for(int index = 0; index < N; index++) {
     visited[index] = false;
-    cout << "KEY[" << index << "] - " << key[index] << endl;
+    //cout << "KEY[" << index << "] - " << key[index] << endl;
   }
+  //cout << endl;
 
   list<int> *path = new list<int>;
 
@@ -147,7 +164,7 @@ void MST::makeTSP2() {
   for(list<int>::iterator i = path->begin(); i!=path->end(); i++){
     curr = *i;
     parent_tsp[curr] = pre;
-    cout << *i << " ";
+    //cout << *i << " ";
     pre = curr;
   }
   parent_tsp[0] = pre;
@@ -156,17 +173,26 @@ void MST::makeTSP2() {
     tsp[i] = adjacentMatrix[i][parent_tsp[i]];
     
   }
+
+  //cout << endl;
+  //cout << "After" << endl;
+  //cout << "Vertex - " << "Incoming edge weight" << endl;
+  for(int index = 0; index < N; index++) {
+    //cout << "KEY[" << index << "] - " << key[index] << endl;
+  }
+  //cout << endl;
 	
   //call to local function calMean(2)
   //cout << "TSP2: "<< calMean(2) << endl;
 }
 
 void MST::printTSP2() {
-  cout<<endl;
+  cout << endl;
+  cout << endl;
   cout<<"TSP2"<<endl;
-  cout<<"Edge   Weight"<<endl;
+  //cout<<"Edge   Weight"<<endl;
   for (int i = 0; i < N; i++) {
-    cout << parent_tsp[i] <<" - "<< i <<"  "<< tsp[i] << endl;
+    //cout << parent_tsp[i] <<" - "<< i <<"  "<< tsp[i] << endl;
   }
 }
 
