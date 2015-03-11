@@ -21,7 +21,8 @@ MST::~MST() {
 
 
 //use Prim's algorithm or Kruskal algorithm. 
-//Copied from 'http://www.geeksforgeeks.org/greedy-algorithms-set-5-prims-minimum-spanning-tree-mst-2/'
+//Copied from'http://www.geeksforgeeks.org/greedy-
+//algorithms-set-5-prims-minimum-spanning-tree-mst-2/'
 
 void MST::makeTree() { 
 
@@ -75,7 +76,8 @@ void MST::printMST() {
 	cout<<"Minimum spanning tree from the adjacency matrix"<<endl;
 	cout<<"Edge   Weight"<<endl;
 	for (int i = 1; i < N; i++) {
-		cout << parent[i] <<" - "<< i <<"  "<< adjacentMatrix[i][parent[i]] << endl;
+		cout << parent[i] <<" - "<< i <<"  "<< 
+    adjacentMatrix[i][parent[i]] << endl;
 	}
 }
 
@@ -154,6 +156,7 @@ void MST::makeTSP2() {
     s.pop();
     path->push_back(curr);
     visited[curr] = true;
+
     for(int v = 0; v < N; v++) {
       if(parent[v]==curr && !visited[v]) 
         s.push(v);
@@ -197,7 +200,25 @@ void MST::printTSP2() {
 }
 
 void MST::makeTSP1_5() {
-	
+
+  bool *visited = new bool[N];
+  for(int index = 0; index < N; index++) {
+    visited[index] = false;
+  }
+
+  //keep track of degrees of all vertices
+  stack<int> s;
+
+  for(int index = 0; index < N; index++) {
+    cout << "KEY[" << index << "] - " << key[index] << endl;
+    //x = the number of edges at key[index];
+    //if(x % 2 != 0)
+      //s.push(index);
+  }
+  
+
+
+  //find all vertices of odd degrees
 	//construct minimum-weight-matching for the given MST
 	minimumMatching();
 

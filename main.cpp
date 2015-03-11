@@ -75,9 +75,9 @@ int main() {
 	Point pointset4;
 
 	//max(W,H,N) should be < 20000 because of memory limitation
-	W = /*11588*/5000;
-	H = /*13772*/3000;
-	N = /*9824*/7000;
+	W = /*11588*/10;
+	H = /*13772*/10;
+	N = /*9824*/6;
 
 	cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
 
@@ -170,7 +170,7 @@ int main() {
 
 	//Deliverable C: Find TSP1.5 path from the constructed MST
 
-    //mst1.makeTSP1p5
+    mst1.makeTSP1_5();
     //mst2.makeTSP1p5
     //mst3.makeTSP1p5
     //mst4.makeTSP1p5
@@ -193,7 +193,6 @@ int main() {
  	cout << "TSP2: " << totalTSP2STD << endl;
  	cout << "TSP1p5: ur mom" << endl;
  	cout << endl;
- 	
 
 
 
