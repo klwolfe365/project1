@@ -31,7 +31,7 @@ void MST::makeTree() {
         key[i] = INT_MAX, mstSet[i] = false;
  
      // Always include first 1st vertex in MST.
-     key[0] = 0;     // Make key 0 so that this vertex is picked as first vertex
+     key[0] = 0;  // Make key 0 so that this vertex is first vertex
      parent[0] = -1; // First node is always root of MST 
  
      // The MST will have V vertices
@@ -48,9 +48,10 @@ void MST::makeTree() {
         // the picked vertex. Consider only those vertices which are not yet
         // included in MST
         for (int v = 0; v < N; v++)
-           // mstSet[v] is false for vertices not yet included in MST
-           // Update the key only if adjacentMatrix[u][v] is smaller than key[v]
-          if (adjacentMatrix[u][v] && mstSet[v] == false && adjacentMatrix[u][v] <  key[v])
+          // mstSet[v] is false for vertices not yet included in MST
+          // Update the key only if adjacentMatrix[u][v] is smaller than key[v]
+          if (adjacentMatrix[u][v] && mstSet[v] == 
+                            false && adjacentMatrix[u][v] <  key[v])
              parent[v]  = u, key[v] = adjacentMatrix[u][v], tsp[v] =
                adjacentMatrix[u][v];
      }
@@ -206,6 +207,30 @@ void MST::makeTSP1_5() {
     visited[index] = false;
   }
 
+  /* FINDING ODD DEGREE VERTICES 
+
+  iterate through adjacency matrix 
+  
+      -each row indicates a single vertex
+      -at each intersection from one vertex to another,
+          the value must be greater than zero. 
+      -if the intersection value is greater than zero, 
+          increase counter variable until you hit the last
+          column. 
+      -if (count % 2 != 0) then push the that vertex into 
+          the list. 
+      -else move to the next row and continue again until all
+          rows are indexed. 
+  */
+
+
+  /* MINIMUM WEIGHT MATCHING
+
+      I think the idea here 
+  */
+
+  
+
   //keep track of degrees of all vertices
   stack<int> s;
 
@@ -222,7 +247,8 @@ void MST::makeTSP1_5() {
 	//construct minimum-weight-matching for the given MST
 	minimumMatching();
 
-	//make all edges has even degree by combining mimimum-weight matching and MST
+	//make all edges has even degree by combining mimimum-weight matching 
+  //and MST
 	combine();
 
 	//calculate heuristic TSP cost 
@@ -235,5 +261,6 @@ void MST::minimumMatching() { //if you choose O(n^2)
 } 
 
 void MST::combine() {
-	//combine minimum-weight matching with the MST to get a multigraph which has vertices with even degree
+	//combine minimum-weight matching with the MST to get a multigraph 
+  //which has vertices with even degree
 }
