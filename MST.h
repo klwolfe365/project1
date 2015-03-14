@@ -13,6 +13,8 @@ public:
   int* parent_tsp;
   int N; //the size of pointset
   int* degree;
+  int* tsp15;
+  int* parent_tsp15;
 
 	MST(float** adjacentMatrix, int size);
 	~MST();
@@ -28,13 +30,14 @@ public:
 
 	//deliverable c
 	void makeTSP1_5();
+	bool in_edgeSet(int parent, int current, list<std::pair<int, int>> edge_set);
 	
 	float calMean(int option);
 	float calStd(int option);
 
 private:
 	list<std::pair<int, int>> minimumMatching(int *array/*, list<std::pair<int, int>>* edge_set*/);
-	void combine();
+	list<std::pair<int, int>> combine(list<std::pair<int, int>>);
 	int minKey(int key[], bool mstSet[]);
 
 };

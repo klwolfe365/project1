@@ -19,6 +19,10 @@ MST::MST(float** input, int size) {
   parent_tsp = new int[size];
 	N = size;
   degree = new int[size];
+  tsp15 = new int[size];
+  parent_tsp15 = new int[size];
+
+
 }
 
 MST::~MST() {
@@ -231,26 +235,6 @@ void MST::makeTSP1_5() {
       odd_vertices[i] = -1;
   }
 
-
-  /* MINIMUM WEIGHT MATCHING
-
-      I think the idea here 
-  */
-
-  
-
-  //keep track of degrees of all vertices
-  stack<int> s;
-
-  for(int index = 0; index < N; index++) {
-    cout << "KEY[" << index << "] - " << key[index] << endl;
-    //x = the number of edges at key[index];
-    //if(x % 2 != 0)
-      //s.push(index);
-  }
-  
-
-
   //find all vertices of odd degrees
 	//construct minimum-weight-matching for the given MST
   list<std::pair<int, int>> edge_set;
@@ -262,12 +246,81 @@ void MST::makeTSP1_5() {
         adjacentMatrix[(*it).first][(*it).second] << endl;
   }
 
-	//make all edges has even degree by combining mimimum-weight matching 
+	//make all edges have even degree by combining mimimum-weight matching 
   //and MST
-	combine();
+	edge_set = combine(edge_set);
+  cout << "\nIN TSP1_5: " << endl;
+  for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
+    cout << "U: " << (*it).first << " V: " << (*it).second << " Edge Weight: " << 
+        adjacentMatrix[(*it).first][(*it).second] << endl;
+  }
 
 	//calculate heuristic TSP cost 
+
+
+
+
+
+
+
+
+
+
+
+
+//bool *visited = new bool[N];
+  //cout << endl;
+  //cout << "Before" << endl;
+  //cout << "Vertex - " << "Incoming edge weight" << endl;
+  for(int index = 0; index < N; index++) {
+    visited[index] = false;
+    //cout << "KEY[" << index << "] - " << key[index] << endl;
+  }
+  //cout << endl;
+  list<int> *path = new list<int>;
+  stack<int> s;
+  s.push(0);//first key in edge set, then for all edges in edge set whose parent is x
+  int curr;
+ 
+  while(!s.empty()){
+    curr = s.top();
+    s.pop();
+    path->push_back(curr);
+    visited[curr] = true;
+
+    for(int v = 0; v < N; v++) {
+      if(/*parent[v]==curr &&*/!visited[v] && in_edgeSet(v, curr, edge_set)) 
+        s.push(v);
+    }
+  }
+
+  int pre = 0;
+  for(list<int>::iterator i = path->begin(); i!=path->end(); i++){
+    curr = *i;
+    parent_tsp15[curr] = pre;
+    cout << *i << " ";
+    pre = curr;
+  }
+  parent_tsp15[0] = pre;
+
+  for(int i = 0; i < N; i++){
+    tsp15[i] = adjacentMatrix[i][parent_tsp15[i]];
+    
+  }
+
+
 }
+
+bool MST::in_edgeSet(int parent, int current, list<std::pair<int, int>> edge_set){
+  for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
+    if((*it).first == parent && (*it).second == current){
+          cout << "IN EDGE SET" << endl;
+      return true;
+    }
+  }
+  return false;
+}
+
 
 list<std::pair<int, int>> MST::minimumMatching(int *array/*, list<std::pair<int, int>>* ret*/) { //if you choose O(n^2)
   //find minimum-weight matching for the MST. 
@@ -285,11 +338,10 @@ list<std::pair<int, int>> MST::minimumMatching(int *array/*, list<std::pair<int,
       for(int j = 0; j < N; j++) {
         if(array[j] != -1 && adjacentMatrix[i][j]!=0) {
           pq.push(std::make_pair(std::make_pair(i,j), -adjacentMatrix[i][j]));
-          //if(adjacentMatrix[i][j] != 0) {
             count++;
             cout << count << " ";
-            cout << "Vertex U: " << i << " Vertex V: " << j << " Edge Value: " << adjacentMatrix[i][j] << endl;
-          //}  
+            cout << "Vertex U: " << i << " Vertex V: " << j << 
+            " Edge Value: " << adjacentMatrix[i][j] << endl;
         } 
       } //end inner for loop
     }
@@ -308,7 +360,30 @@ list<std::pair<int, int>> MST::minimumMatching(int *array/*, list<std::pair<int,
   return ret;
 } 
 
-void MST::combine() {
+list<std::pair<int, int>> MST::combine(list<std::pair<int, int>> edge_set) {
 	//combine minimum-weight matching with the MST to get a multigraph 
   //which has vertices with even degree
+  bool *visited = new bool[N];
+  for(int index = 0; index < N; index++) {
+    visited[index] = false;
+  }
+
+  stack<int> s;
+  s.push(0);
+  int curr;
+
+  while(!s.empty()){
+    curr = s.top();
+    s.pop();
+    if(parent[curr]>=0)
+    edge_set.push_back(std::make_pair(curr, parent[curr]));
+    visited[curr] = true;
+
+    for(int v = 0; v < N; v++) {
+      if(parent[v]==curr)// && !visited[v]) 
+        s.push(v);
+    }
+  }
+  return edge_set;
+
 }
