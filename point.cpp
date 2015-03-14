@@ -68,13 +68,13 @@ void Point::printPointset() {
 	 }
 	 cout << endl;
 
-	 /*cout<<"adjacency matrix: "<<endl;
+	 cout<<"adjacency matrix: "<<endl;
 	 for(int i=0; i<pointNum ; ++i) {
 		 for(int j=0; j<pointNum ; ++j) {
-			 cout<<adjacentMatrix[i][j]<<"  ";
+			 cout<<(int)adjacentMatrix[i][j]<<"  ";
 		 }
 		 cout<<endl;
-	 }*/
+	 }
 }
 
 float Point::getEuclideanDistance(int x1, int y1, int x2, int y2) {

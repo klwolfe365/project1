@@ -13,6 +13,7 @@ MST::MST(float** input, int size) {
   tsp = new int[size];
   parent_tsp = new int[size];
 	N = size;
+  degree = new int[size];
 }
 
 MST::~MST() {
@@ -50,11 +51,18 @@ void MST::makeTree() {
         for (int v = 0; v < N; v++)
           // mstSet[v] is false for vertices not yet included in MST
           // Update the key only if adjacentMatrix[u][v] is smaller than key[v]
-          if (adjacentMatrix[u][v] && mstSet[v] == 
-                            false && adjacentMatrix[u][v] <  key[v])
-             parent[v]  = u, key[v] = adjacentMatrix[u][v], tsp[v] =
-               adjacentMatrix[u][v];
+          if (adjacentMatrix[u][v] && mstSet[v] == false && adjacentMatrix[u][v] <  key[v])
+             parent[v]  = u, key[v] = adjacentMatrix[u][v], tsp[v] = adjacentMatrix[u][v];
+
+           //cout << degree[v] << endl;
      }
+     for(int i = 0; i < N; i++){
+        if(parent[i] != -1){
+          degree[i]++;
+          degree[parent[i]]++;
+        }
+     }
+    
 }
 
 // A utility function to find the vertex with minimum key value, from
@@ -203,25 +211,20 @@ void MST::printTSP2() {
 void MST::makeTSP1_5() {
 
   bool *visited = new bool[N];
-  for(int index = 0; index < N; index++) {
+  /*for(int index = 0; index < N; index++) {
     visited[index] = false;
+  }*/
+  int *odd_vertices = new int[N];
+
+  cout << "Vertex  -  Degree" << endl;
+  for(int i = 0; i < N; i++) {
+    if(degree[i] % 2 != 0) {
+      odd_vertices[i] = i;
+      cout << i << " - " << degree[i] << endl; 
+    }
+    else
+      odd_vertices[i] = -1;
   }
-
-  /* FINDING ODD DEGREE VERTICES 
-
-  iterate through adjacency matrix 
-  
-      -each row indicates a single vertex
-      -at each intersection from one vertex to another,
-          the value must be greater than zero. 
-      -if the intersection value is greater than zero, 
-          increase counter variable until you hit the last
-          column. 
-      -if (count % 2 != 0) then push the that vertex into 
-          the list. 
-      -else move to the next row and continue again until all
-          rows are indexed. 
-  */
 
 
   /* MINIMUM WEIGHT MATCHING
@@ -245,7 +248,7 @@ void MST::makeTSP1_5() {
 
   //find all vertices of odd degrees
 	//construct minimum-weight-matching for the given MST
-	minimumMatching();
+	minimumMatching(odd_vertices);
 
 	//make all edges has even degree by combining mimimum-weight matching 
   //and MST
@@ -254,10 +257,38 @@ void MST::makeTSP1_5() {
 	//calculate heuristic TSP cost 
 }
 
-void MST::minimumMatching() { //if you choose O(n^2)
-	//find minimum-weight matching for the MST. 
-	
+void MST::minimumMatching(int *array) { //if you choose O(n^2)
+  //find minimum-weight matching for the MST. 
+	/* iterate through the list
+   * first elem = i
+   * continue iteration -- it* , compare dist, find min, */
 	//you should carefully choose a matching algorithm to optimize the TSP cost.
+  int count = 0;
+  //bool *edges = new bool[N];
+  for(int i = 0; i < N; i++) {
+    if(array[i] != -1) {
+      for(int j = 0; j < N; j++) {
+        if(array[j] != -1) {
+          //pq.push(make_pair(u,v),adjacentMatrix[i][j]);
+          if(adjacentMatrix[i][j] != 0) {
+            count++;
+            cout << count << " ";
+            cout << "Vertex U: " << i << " Vertex V: " << j << " Edge Value: " << adjacentMatrix[i][j] << endl;
+          }  
+        } 
+      } //end inner for loop
+    }
+  } //end outer for loop
+
+  /*while(!pq.empty()){
+    curr = pq.top();
+    pq.pop();
+    if(!edges[curr->first->first] && !edges[curr->first->second]){
+      push(curr->first); //TODO
+      edges[curr->first->first] = true;
+      edges[curr->first->second] = true;
+    }
+  }*/
 } 
 
 void MST::combine() {

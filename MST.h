@@ -11,6 +11,7 @@ public:
   int* tsp;
   int* parent_tsp;
   int N; //the size of pointset
+  int* degree;
 
 	MST(float** adjacentMatrix, int size);
 	~MST();
@@ -31,7 +32,7 @@ public:
 	float calStd(int option);
 
 private:
-	void minimumMatching();
+	void minimumMatching(int *array);
 	void combine();
 	int minKey(int key[], bool mstSet[]);
 
