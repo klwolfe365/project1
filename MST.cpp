@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <array>
 #include <stack>
+#include <queue>
+
+
+
+
 
 MST::MST(float** input, int size) {
 	adjacentMatrix = input;
@@ -248,7 +253,14 @@ void MST::makeTSP1_5() {
 
   //find all vertices of odd degrees
 	//construct minimum-weight-matching for the given MST
-	minimumMatching(odd_vertices);
+  list<std::pair<int, int>> edge_set;
+	edge_set = minimumMatching(odd_vertices/*, edge_set*/);
+  //cout << "RETURNED FROM FUNCTION" << endl;
+
+  for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
+    cout << "U: " << (*it).first << " V: " << (*it).second << " Edge Weight: " << 
+        adjacentMatrix[(*it).first][(*it).second] << endl;
+  }
 
 	//make all edges has even degree by combining mimimum-weight matching 
   //and MST
@@ -257,38 +269,43 @@ void MST::makeTSP1_5() {
 	//calculate heuristic TSP cost 
 }
 
-void MST::minimumMatching(int *array) { //if you choose O(n^2)
+list<std::pair<int, int>> MST::minimumMatching(int *array/*, list<std::pair<int, int>>* ret*/) { //if you choose O(n^2)
   //find minimum-weight matching for the MST. 
 	/* iterate through the list
    * first elem = i
    * continue iteration -- it* , compare dist, find min, */
 	//you should carefully choose a matching algorithm to optimize the TSP cost.
   int count = 0;
-  //bool *edges = new bool[N];
+  bool *edges = new bool[N];
+  for(int i = 0; i < N; i++)
+    edges[i] = false;
+  std::priority_queue<std::pair<std::pair<int, int>, int>> pq;
   for(int i = 0; i < N; i++) {
     if(array[i] != -1) {
       for(int j = 0; j < N; j++) {
-        if(array[j] != -1) {
-          //pq.push(make_pair(u,v),adjacentMatrix[i][j]);
-          if(adjacentMatrix[i][j] != 0) {
+        if(array[j] != -1 && adjacentMatrix[i][j]!=0) {
+          pq.push(std::make_pair(std::make_pair(i,j), -adjacentMatrix[i][j]));
+          //if(adjacentMatrix[i][j] != 0) {
             count++;
             cout << count << " ";
             cout << "Vertex U: " << i << " Vertex V: " << j << " Edge Value: " << adjacentMatrix[i][j] << endl;
-          }  
+          //}  
         } 
       } //end inner for loop
     }
   } //end outer for loop
-
-  /*while(!pq.empty()){
+  list<std::pair<int, int>> ret;
+  std::pair<std::pair<int, int>, int> curr;
+  while(!pq.empty()){
     curr = pq.top();
     pq.pop();
-    if(!edges[curr->first->first] && !edges[curr->first->second]){
-      push(curr->first); //TODO
-      edges[curr->first->first] = true;
-      edges[curr->first->second] = true;
+    if(!edges[curr.first.first] && !edges[curr.first.second]){
+      ret.push_back(make_pair(curr.first.first, curr.first.second));
+      edges[curr.first.first] = true;
+      edges[curr.first.second] = true;
     }
-  }*/
+  }
+  return ret;
 } 
 
 void MST::combine() {

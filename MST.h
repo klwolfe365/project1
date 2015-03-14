@@ -1,4 +1,5 @@
 #include "common.h"
+#include <list>
 
 #pragma once
 
@@ -32,7 +33,7 @@ public:
 	float calStd(int option);
 
 private:
-	void minimumMatching(int *array);
+	list<std::pair<int, int>> minimumMatching(int *array/*, list<std::pair<int, int>>* edge_set*/);
 	void combine();
 	int minKey(int key[], bool mstSet[]);
 
