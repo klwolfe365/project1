@@ -15,6 +15,7 @@ public:
   int* degree;
   int* tsp15;
   int* parent_tsp15;
+  float** minMatchEdgeSet;
 
 	MST(float** adjacentMatrix, int size);
 	~MST();
@@ -31,6 +32,7 @@ public:
 	//deliverable c
 	void makeTSP1_5();
 	bool in_edgeSet(int parent, int current, list<std::pair<int, int>> edge_set);
+	bool all_visited(bool* visited);
 	
 	float calMean(int option);
 	float calStd(int option);

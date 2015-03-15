@@ -21,6 +21,11 @@ MST::MST(float** input, int size) {
   degree = new int[size];
   tsp15 = new int[size];
   parent_tsp15 = new int[size];
+  minMatchEdgeSet = (float**)calloc(N, sizeof(float *));
+
+  for(int i=0; i<N ; ++i) {
+    minMatchEdgeSet[i] = (float*)calloc(N, sizeof(float));
+  }
 
 
 }
@@ -122,7 +127,18 @@ float MST::calMean(int option) {
     mean = sum;
   }
 
-  else if(option == TSP1_5) {}
+  else if(option == TSP1_5) {
+    for(int index = 0; index < N; index++) {
+        sum += tsp15[index];
+    }
+    /*for(int i = 0; i < N; i++) {
+      for(int j = 0; j < N; j++) {
+
+        sum += minMatchEdgeSet[i][j];
+      }
+    }*/
+    mean = sum;
+  }
 
 	return mean;
 }
@@ -145,7 +161,13 @@ float MST::calStd(int option) {
     }
     std = sum * sum;
   }
-  else if(option == TSP1_5) {}
+
+  else if(option == TSP1_5) {
+    for(int index = 0; index < N; index++) {
+        sum += tsp15[index];
+    }
+    std = sum * sum;
+  }
 	return std;
 }
 
@@ -153,12 +175,8 @@ void MST::makeTSP2() {
 
   //make a Eulerian tour by DFS
   bool *visited = new bool[N];
-  //cout << endl;
-  //cout << "Before" << endl;
-  //cout << "Vertex - " << "Incoming edge weight" << endl;
   for(int index = 0; index < N; index++) {
     visited[index] = false;
-    //cout << "KEY[" << index << "] - " << key[index] << endl;
   }
   //cout << endl;
 
@@ -195,25 +213,15 @@ void MST::makeTSP2() {
     
   }
 
-  //cout << endl;
-  //cout << "After" << endl;
-  //cout << "Vertex - " << "Incoming edge weight" << endl;
-  for(int index = 0; index < N; index++) {
-    //cout << "KEY[" << index << "] - " << key[index] << endl;
-  }
-  //cout << endl;
-	
-  //call to local function calMean(2)
-  //cout << "TSP2: "<< calMean(2) << endl;
 }
 
 void MST::printTSP2() {
   cout << endl;
   cout << endl;
   cout<<"TSP2"<<endl;
-  //cout<<"Edge   Weight"<<endl;
+  cout<<"Edge   Weight"<<endl;
   for (int i = 0; i < N; i++) {
-    //cout << parent_tsp[i] <<" - "<< i <<"  "<< tsp[i] << endl;
+    cout << parent_tsp[i] <<" - "<< i <<"  "<< tsp[i] << endl;
   }
 }
 
@@ -225,11 +233,11 @@ void MST::makeTSP1_5() {
   }*/
   int *odd_vertices = new int[N];
 
-  cout << "Vertex  -  Degree" << endl;
+  //cout << "Vertex  -  Degree" << endl;
   for(int i = 0; i < N; i++) {
     if(degree[i] % 2 != 0) {
       odd_vertices[i] = i;
-      cout << i << " - " << degree[i] << endl; 
+      //cout << i << " - " << degree[i] << endl; 
     }
     else
       odd_vertices[i] = -1;
@@ -241,37 +249,33 @@ void MST::makeTSP1_5() {
 	edge_set = minimumMatching(odd_vertices/*, edge_set*/);
   //cout << "RETURNED FROM FUNCTION" << endl;
 
-  for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
+  /*for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
     cout << "U: " << (*it).first << " V: " << (*it).second << " Edge Weight: " << 
         adjacentMatrix[(*it).first][(*it).second] << endl;
-  }
+  }*/
 
 	//make all edges have even degree by combining mimimum-weight matching 
   //and MST
 	edge_set = combine(edge_set);
-  cout << "\nIN TSP1_5: " << endl;
-  for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
+ // cout << "\nIN TSP1_5: " << endl;
+  /*for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
     cout << "U: " << (*it).first << " V: " << (*it).second << " Edge Weight: " << 
         adjacentMatrix[(*it).first][(*it).second] << endl;
-  }
+  }*/
 
-	//calculate heuristic TSP cost 
+	/*calculate heuristic TSP cost 
+  int sum = 0;
+
+  for(int i = 0; i < N; i++) {
+
+    for(int j = 0; j < N; j++) {
+
+      sum += minMatchEdgeSet[i][j];
+    }
+  }*/
 
 
 
-
-
-
-
-
-
-
-
-
-//bool *visited = new bool[N];
-  //cout << endl;
-  //cout << "Before" << endl;
-  //cout << "Vertex - " << "Incoming edge weight" << endl;
   for(int index = 0; index < N; index++) {
     visited[index] = false;
     //cout << "KEY[" << index << "] - " << key[index] << endl;
@@ -289,22 +293,24 @@ void MST::makeTSP1_5() {
     visited[curr] = true;
 
     for(int v = 0; v < N; v++) {
-      if(/*parent[v]==curr &&*/!visited[v] && in_edgeSet(v, curr, edge_set)) 
+      if(!visited[v] && (minMatchEdgeSet[curr][v]>0 || minMatchEdgeSet[v][curr]>0)) 
         s.push(v);
     }
   }
-
   int pre = 0;
   list<int>::iterator i = path->begin();
   //curr = i*;
-  int first = *i;
-  for(; i!=path->end(); i++){
+  //int first = *i;
+  
+  path->unique();
+
+  for(i=path->begin(); i!=path->end(); i++) {
     curr = *i;
     parent_tsp15[curr] = pre;
     cout << *i << " ";
     pre = curr;
   }
-  parent_tsp15[first] = pre;
+  parent_tsp15[0] = pre;
 
   for(int i = 0; i < N; i++){
     tsp15[i] = adjacentMatrix[i][parent_tsp15[i]];
@@ -315,7 +321,6 @@ void MST::makeTSP1_5() {
 bool MST::in_edgeSet(int parent, int current, list<std::pair<int, int>> edge_set){
   for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
     if(((*it).first == parent && (*it).second == current) || ((*it).first == current && (*it).second == parent)){
-          cout << "IN EDGE SET" << endl;
       return true;
     }
   }
@@ -338,21 +343,29 @@ list<std::pair<int, int>> MST::minimumMatching(int *array/*, list<std::pair<int,
     if(array[i] != -1) {
       for(int j = 0; j < N; j++) {
         if(array[j] != -1 && adjacentMatrix[i][j]!=0) {
+
+
           pq.push(std::make_pair(std::make_pair(i,j), -adjacentMatrix[i][j]));
             count++;
-            cout << count << " ";
-            cout << "Vertex U: " << i << " Vertex V: " << j << 
-            " Edge Value: " << adjacentMatrix[i][j] << endl;
+            //cout << count << " ";
+            //cout << "Vertex U: " << i << " Vertex V: " << j << 
+            //" Edge Value: " << adjacentMatrix[i][j] << endl;
         } 
       } //end inner for loop
     }
   } //end outer for loop
+
+  //list that holds a vertex pair and edge value
   list<std::pair<int, int>> ret;
   std::pair<std::pair<int, int>, int> curr;
+  
   while(!pq.empty()){
     curr = pq.top();
     pq.pop();
-    if(!edges[curr.first.first] && !edges[curr.first.second]){
+
+    //make sure that the value is orignally null otherwise there is something there!!
+    if(!edges[curr.first.first] && !edges[curr.first.second]) {
+
       ret.push_back(make_pair(curr.first.first, curr.first.second));
       edges[curr.first.first] = true;
       edges[curr.first.second] = true;
@@ -372,19 +385,36 @@ list<std::pair<int, int>> MST::combine(list<std::pair<int, int>> edge_set) {
   stack<int> s;
   s.push(0);
   int curr;
-
+  //Add edges in edge_set to minMatchEdgeSet
+  for(list<std::pair<int,int>>::iterator i = edge_set.begin(); i!=edge_set.end(); i++){
+    minMatchEdgeSet[(*i).first][(*i).second] = adjacentMatrix[(*i).first][(*i).second];
+  }
+  //Add edges in MST to minMatchEdgeSet
   while(!s.empty()){
     curr = s.top();
     s.pop();
-    if(parent[curr]>=0)
-    edge_set.push_back(std::make_pair(curr, parent[curr]));
-    visited[curr] = true;
+
+    if(parent[curr]>=0) {
+      minMatchEdgeSet[parent[curr]][curr]=adjacentMatrix[parent[curr]][curr];
+      edge_set.push_back(std::make_pair(curr, parent[curr]));
+      visited[curr] = true;
+    }
 
     for(int v = 0; v < N; v++) {
       if(parent[v]==curr)// && !visited[v]) 
         s.push(v);
     }
+    
   }
+  /*cout << "minimum edge matching matrix: " << endl;
+    for(int u = 0; u < N; u++) {
+
+      for(int v = 0; v < N; v++) {
+        cout << minMatchEdgeSet[u][v] << "  ";
+      }
+      cout << endl;
+    }*/
+
   return edge_set;
 
 }
