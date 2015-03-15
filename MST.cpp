@@ -295,25 +295,26 @@ void MST::makeTSP1_5() {
   }
 
   int pre = 0;
-  for(list<int>::iterator i = path->begin(); i!=path->end(); i++){
+  list<int>::iterator i = path->begin();
+  //curr = i*;
+  int first = *i;
+  for(; i!=path->end(); i++){
     curr = *i;
     parent_tsp15[curr] = pre;
     cout << *i << " ";
     pre = curr;
   }
-  parent_tsp15[0] = pre;
+  parent_tsp15[first] = pre;
 
   for(int i = 0; i < N; i++){
     tsp15[i] = adjacentMatrix[i][parent_tsp15[i]];
     
   }
-
-
 }
 
 bool MST::in_edgeSet(int parent, int current, list<std::pair<int, int>> edge_set){
   for(list<std::pair<int, int>>::iterator it = edge_set.begin(); it != edge_set.end(); it++){
-    if((*it).first == parent && (*it).second == current){
+    if(((*it).first == parent && (*it).second == current) || ((*it).first == current && (*it).second == parent)){
           cout << "IN EDGE SET" << endl;
       return true;
     }

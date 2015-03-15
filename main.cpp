@@ -79,9 +79,9 @@ int main() {
 	Point pointset4;
 
 	//max(W,H,N) should be < 20000 because of memory limitation
-	W = /*11588*/7;
-	H = /*13772*/7;
-	N = /*9824*/6;
+	W = /*11588*/100;
+	H = /*13772*/100;
+	N = /*9824*/10;
 
 	cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
 
